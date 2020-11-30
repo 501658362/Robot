@@ -1,15 +1,12 @@
 package top.chenyanjin.robot.lol;
 
-import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
-import top.chenyanjin.robot.lol.constant.WindowNameEnum;
+import top.chenyanjin.robot.lol.enums.WindowNameEnum;
 import top.chenyanjin.robot.lol.util.WinUtil;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 
 public class JNATest {
     private static final int MAX_TITLE_LENGTH = 1024;
@@ -18,7 +15,7 @@ public class JNATest {
 
 
         // 第一个参数是Windows窗体的窗体类，第二个参数是窗体的标题。不熟悉windows编程的需要先找一些Windows窗体数据结构的知识来看看，还有windows消息循环处理，其他的东西不用看太多。
-        WinDef.HWND hwnd = WinUtil.findWindow(WindowNameEnum.ShellTabWindowClass);
+        WinDef.HWND hwnd = WinUtil.findWindow(WindowNameEnum.LOGIN);
 
         WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(hwnd);
         Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();

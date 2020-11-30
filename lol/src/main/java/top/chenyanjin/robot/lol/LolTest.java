@@ -2,7 +2,7 @@ package top.chenyanjin.robot.lol;
 
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
-import top.chenyanjin.robot.lol.constant.WindowNameEnum;
+import top.chenyanjin.robot.lol.enums.WindowNameEnum;
 import top.chenyanjin.robot.lol.util.WinUtil;
 
 import javax.imageio.ImageIO;

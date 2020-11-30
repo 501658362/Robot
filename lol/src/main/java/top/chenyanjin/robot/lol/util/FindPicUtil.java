@@ -35,14 +35,21 @@ public class FindPicUtil {
 
 
     public FindPicUtil(String screenPath, List<String> keyImagePathList) {
-        //screenShotImage = this.getFullScreenShot();
         screenShotImage = this.getBfImageFromPath(screenPath);
         screenShotImageRgbData = this.getImageGRB(screenShotImage);
         scrShotImgWidth = screenShotImage.getWidth();
         scrShotImgHeight = screenShotImage.getHeight();
         //开始查找
         this.findImage(keyImagePathList);
+    }
 
+    public FindPicUtil(BufferedImage current, List<String> keyImagePathList) {
+        screenShotImage = current;
+        screenShotImageRgbData = this.getImageGRB(screenShotImage);
+        scrShotImgWidth = screenShotImage.getWidth();
+        scrShotImgHeight = screenShotImage.getHeight();
+        //开始查找
+        this.findImage(keyImagePathList);
     }
 
     /**
@@ -123,7 +130,7 @@ public class FindPicUtil {
                         boolean isFinded = isMatchAll(y, x);
                         //如果比较结果完全相同，则说明图片找到，填充查找到的位置坐标数据到查找结果数组。
                         if (isFinded) {
-                            result.add(new Point(y, x));
+                            result.add(new Point(x, y));
                             continue out;
                         }
                     }
@@ -165,7 +172,7 @@ public class FindPicUtil {
     public static void main(String[] args) {
 //        String keyImagePath = "inviteBtn.png";
         String keyImagePath = "invite2.bmp";
-        FindPicUtil demo = new FindPicUtil("D:\\IdeaProjects\\Robot\\currentClient.png", Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\接受对局.bmp"));
+        FindPicUtil demo = new FindPicUtil("D:\\IdeaProjects\\Robot\\currentClient.png", Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\play按钮.bmp"));
         System.out.println(demo.result);
     }
 
