@@ -2,9 +2,9 @@ package top.chenyanjin.robot.lol.service;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import top.chenyanjin.robot.lol.Main;
 import top.chenyanjin.robot.lol.enums.ClientModeEnum;
 import top.chenyanjin.robot.lol.thread.GlobalData;
-import top.chenyanjin.robot.lol.thread.PageDetection;
 import top.chenyanjin.robot.lol.util.*;
 
 import java.awt.*;
@@ -14,33 +14,65 @@ import java.util.List;
  * @author CHEN
  */
 @Slf4j
-public class ClientService {
+public class ClientService extends Thread {
+    /**
+     * Allocates a new {@code Thread} object. This constructor has the same
+     * effect as
+     * {@code (null, null, name)}.
+     *
+     * @param name the name of the new thread
+     */
+    public ClientService(String name) {
+        super(name);
+    }
 
+    @Override
     public void run() {
-        int currentPage = getCurrentPage();
+        while (!this.isInterrupted() && GlobalData.mode.get() == 2) {
+            if (Main.selectHeroGame.isAlive()) {
+                log.info("选英雄线程正在运行中");
+                DelayUtil.delay(5000L);
+                return;
+            }
+            int currentPage = getCurrentPage();
 
-        // 首页
-        if (currentPage == 1) {
-            enterRoom();
-        }
-        // 房间页
-        if (currentPage == 2) {
-            log("在房间中");
-            //TODO 检测是否需要选位置
-            if (isOwner()) {
-                // 检测是否需要邀请
-                inviteTeamMate();
-                clickFindGame();
-                matchingGame();
-            } else {
-                // 等待游戏开始
+            // 首页
+            if (currentPage == 1) {
+                enterRoom();
+            }
+            // 房间页
+            if (currentPage == 2) {
+                log("在房间中");
+                //TODO 检测是否需要选位置
+                if (isOwner()) {
+                    // 检测是否需要邀请
+                    inviteTeamMate();
+                    clickFindGame();
+                    matchingGame();
+                } else {
+                    // 等待游戏开始
+                    matchingGame();
+                }
+            }
+            // 匹配游戏中
+            if (currentPage == 3) {
+                log("匹配游戏中");
+                //TODO 等待接受游戏
                 matchingGame();
             }
-        }
-        // 匹配游戏中
-        if (currentPage == 3) {
-            log("匹配游戏中");
-            //TODO 等待接受游戏
+            // 匹配游戏中
+            if (currentPage == 4) {
+                log("选择英雄中");
+                if (!Main.selectHeroGame.isAlive()) {
+                    Main.selectHeroGame.start();
+                }
+            }
+            // 秒退惩罚中
+            if (currentPage == 5) {
+                log("秒退惩罚中");
+            }
+
+            DelayUtil.delay(5000L);
         }
 
     }
@@ -104,22 +136,27 @@ public class ClientService {
     }
 
     private void matchingGame() {
-        //TODO 匹配中 等待接受按钮
-        new PageDetection().start();
+        // 匹配中 等待接受按钮
+        if (!Main.matchingGame.isAlive()) {
+            Main.matchingGame.start();
+        }
+
     }
 
     private void clickFindGame() {
-        //TODO 点击寻找对局
+        // 点击寻找对局
+        ClickByImgUtil.clickOne("C:\\\\Users\\\\CHEN\\\\Desktop\\\\AutoHotKey\\\\dm\\\\lol\\\\寻找对局.bmp", "寻找对局");
     }
 
     private List<Point> checkTeamMateIsShowed() {
-
-        return ImageUtil.find(Lists.newArrayList(
-                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite1.png",
-                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite2.bmp",
-                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite3.bmp",
-                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite4.bmp"
-        ));
+        //TODO 需要优化 判断需要邀请几个 还剩几个没有邀请
+        return Lists.newArrayList();
+//        return ImageUtil.find(Lists.newArrayList(
+//                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite1.png",
+//                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite2.bmp",
+//                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite3.bmp",
+//                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\invite4.bmp"
+//        ));
     }
 
     private boolean invite(List<Point> points) {
@@ -168,7 +205,7 @@ public class ClientService {
     private boolean selectPlayPosition() {
         //TODO 选择游戏位置
         log("选择游戏位置");
-        List<Point> points = ImageUtil.find(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\选位置按钮.bmp"));
+        List<Point> points = ImageUtil.findPoint(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\选位置按钮.bmp"));
         if (points != null && points.size() > 0) {
             RobotUtil.delay(1000);
             RobotUtil.click(points.get(0));
@@ -196,7 +233,7 @@ public class ClientService {
     private boolean clickPlayToRoomBtn() {
         //TODO 点击 play 按钮
         log("点击 play 按钮");
-        List<Point> points = ImageUtil.find(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\play按钮.bmp",
+        List<Point> points = ImageUtil.findPoint(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\play按钮.bmp",
                 "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\play按钮不可用.bmp"));
         if (points != null && points.size() > 0) {
             RobotUtil.delay(1000);
@@ -210,7 +247,7 @@ public class ClientService {
     private boolean selectGameMode() {
         //TODO 选择游戏模式
         log("选择游戏模式");
-        List<Point> points = ImageUtil.find(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\玩家对战.bmp",
+        List<Point> points = ImageUtil.findPoint(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\玩家对战.bmp",
                 "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\灵活组排.bmp",
                 "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\确认开房间.bmp"
         ));
@@ -250,18 +287,42 @@ public class ClientService {
     }
 
     private int getCurrentPage() {
-        //TODO 获取当前是客户端哪个页面
         int page = 1;
+        // 选英雄中
+        if (ImageUtil.find(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\编辑符文.bmp",
+                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\闪现.bmp",
+                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\选择你的英雄1.bmp",
+                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\禁用不可用.bmp",
+                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\首选.bmp"
+        ))) {
+            page = 4;
+            GlobalData.clientCurrentPage.set(page);
+            return page;
+        }
+
+        // 在房间里
         if (ClickByImgUtil.clickOne(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\房间按钮.bmp",
                 "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\房间按钮1.bmp",
                 "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\房间按钮2.bmp"
         ))) {
-            if (ClickByImgUtil.clickOne(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\房间按钮.bmp",
-                    "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\房间按钮1.bmp",
-                    "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\房间按钮2.bmp"
+
+
+            // 在房间里 排队中
+            if (ImageUtil.find(Lists.newArrayList(
+                    "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\秒退屏蔽按钮.bmp"
+            ))) {
+                page = 5;
+                GlobalData.clientCurrentPage.set(page);
+                return page;
+            }
+
+            // 在房间里 排队中
+            if (ImageUtil.find(Lists.newArrayList(
+                    "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\正在寻找对局.bmp",
+                    "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\队列中.bmp"
             ))) {
                 page = 3;
-            }else{
+            } else {
                 page = 2;
             }
         }

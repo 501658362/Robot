@@ -76,5 +76,6 @@ public class RobotUtil {
         robot.mousePress(KeyEvent.BUTTON1_MASK);
         robot.delay(random.nextInt(200) + 300);
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+        robot.mouseMove(0, 0);
     }
 }

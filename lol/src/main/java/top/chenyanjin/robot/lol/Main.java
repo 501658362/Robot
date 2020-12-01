@@ -3,8 +3,8 @@ package top.chenyanjin.robot.lol;
 import lombok.extern.slf4j.Slf4j;
 import top.chenyanjin.robot.lol.service.ClientService;
 import top.chenyanjin.robot.lol.thread.GlobalData;
-import top.chenyanjin.robot.lol.thread.LoginGame;
-import top.chenyanjin.robot.lol.thread.PlayGame;
+import top.chenyanjin.robot.lol.thread.MatchingGame;
+import top.chenyanjin.robot.lol.thread.SelectHeroGame;
 import top.chenyanjin.robot.lol.thread.WindowDetection;
 import top.chenyanjin.robot.lol.util.DelayUtil;
 
@@ -13,6 +13,9 @@ import top.chenyanjin.robot.lol.util.DelayUtil;
  */
 @Slf4j
 public class Main {
+    public static ClientService clientService = new ClientService("clientService");
+    public static MatchingGame matchingGame = new MatchingGame("matchingGame");
+    public static SelectHeroGame selectHeroGame = new SelectHeroGame("selectHeroGame");
 
     public static void main(String[] args) {
 
@@ -21,24 +24,27 @@ public class Main {
         Thread wd = new WindowDetection();
         wd.start();
 
-        ClientService clientService = new ClientService();
-        while (true){
-            switch (GlobalData.mode.get()) {
-                case 1:
-                    // 对局中
-                    break;
-                case 2:
-                    // 客户端
-                    clientService.run();
-                    break;
-                case 3:
-                    // 登录器
-                    break;
-                default:
-                    break;
-            }
-            DelayUtil.delay(5000L);
-        }
+        clientService.start();
+//        int i = -1;
+//        while (true) {
+//            switch (GlobalData.mode.get()) {
+//                case 1:
+//                    // 对局中
+//                    break;
+//                case 2:
+//                    // 客户端
+//                    if (!selectHeroGame.isAlive() && !clientService.isAlive()) {
+//                        clientService.start();
+//                    }
+//                    break;
+//                case 3:
+//                    // 登录器
+//                    break;
+//                default:
+//                    break;
+//            }
+//            DelayUtil.delay(5000L);
+//        }
 
 
     }

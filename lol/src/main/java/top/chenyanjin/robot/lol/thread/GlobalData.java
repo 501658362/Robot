@@ -19,7 +19,7 @@ public class GlobalData {
     /**
      * 1=游戏中；2=客户端；3登录器；
      */
-    public static AtomicInteger mode = new AtomicInteger();
+    public static AtomicInteger mode = new AtomicInteger(0);
 
     /**
      * 单人还是组队
