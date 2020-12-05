@@ -44,13 +44,11 @@ public class MatchingGame extends Thread {
             if(b){
                 log.info("找到对局");
                 DelayUtil.delay(10000L);
-                try {
-                    Main.clientService.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Main.selectHeroGame.start();
-
+//                try {
+//                    Main.clientService.wait();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
             DelayUtil.delay(1000L);
         }

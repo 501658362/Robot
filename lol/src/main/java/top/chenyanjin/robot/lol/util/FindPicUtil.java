@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class FindPicUtil {
 
     //屏幕截图
@@ -32,6 +33,8 @@ public class FindPicUtil {
     //查找目标图片RGB数据
     int[][] keyImageRgbData;
     List<Point> result = new ArrayList();
+    Point oneResult = null;
+    boolean isFindOne = false;
 
 
     public FindPicUtil(String screenPath, List<String> keyImagePathList) {
@@ -43,11 +46,30 @@ public class FindPicUtil {
         this.findImage(keyImagePathList);
     }
 
+    public FindPicUtil(String screenPath, List<String> keyImagePathList, int test) {
+        screenShotImage = this.getBfImageFromPath(screenPath);
+        screenShotImageRgbData = this.getImageGRB(screenShotImage);
+        scrShotImgWidth = screenShotImage.getWidth();
+        scrShotImgHeight = screenShotImage.getHeight();
+        //开始查找
+        this.findImage1(keyImagePathList);
+    }
+
     public FindPicUtil(BufferedImage current, List<String> keyImagePathList) {
         screenShotImage = current;
         screenShotImageRgbData = this.getImageGRB(screenShotImage);
         scrShotImgWidth = screenShotImage.getWidth();
         scrShotImgHeight = screenShotImage.getHeight();
+        //开始查找
+        this.findImage(keyImagePathList);
+    }
+
+    public FindPicUtil(BufferedImage current, List<String> keyImagePathList, boolean findOne) {
+        screenShotImage = current;
+        screenShotImageRgbData = this.getImageGRB(screenShotImage);
+        scrShotImgWidth = screenShotImage.getWidth();
+        scrShotImgHeight = screenShotImage.getHeight();
+        this.isFindOne = findOne;
         //开始查找
         this.findImage(keyImagePathList);
     }
@@ -131,9 +153,56 @@ public class FindPicUtil {
                         //如果比较结果完全相同，则说明图片找到，填充查找到的位置坐标数据到查找结果数组。
                         if (isFinded) {
                             result.add(new Point(x, y));
+                            if (isFindOne) {
+                                oneResult = new Point(x, y);
+                                return;
+                            }
                             continue out;
                         }
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * 查找图片
+     */
+    public void findImage1(List<String> keyImagePathList) {
+        out:
+        for (String keyImagePath : keyImagePathList) {
+            keyImage = this.getBfImageFromPath(keyImagePath);
+            keyImageRgbData = this.getImageGRB(keyImage);
+            keyImgWidth = keyImage.getWidth();
+            keyImgHeight = keyImage.getHeight();
+            //遍历屏幕截图像素点数据
+            for (int y = 0; y < scrShotImgHeight - keyImgHeight; y++) {
+                for (int x = 0; x < scrShotImgWidth - keyImgWidth; x++) {
+                    //根据目标图的尺寸，得到目标图四个角映射到屏幕截图上的四个点，
+                    //判断截图上对应的四个点与图B的四个角像素点的值是否相同，
+                    //如果相同就将屏幕截图上映射范围内的所有的点与目标图的所有的点进行比较。
+
+                    int cx = x;
+                    int count = 0;
+                    for (int kw = 0; kw < keyImgWidth; kw++) {
+                        if (keyImageRgbData[0][kw] == screenShotImageRgbData[y][cx++]) {
+                            count++;
+                        }
+                    }
+                    log.info(count + "");
+                    if (count / keyImgWidth > 0.8) {
+                        boolean isFinded = isMatchAll1(y, x);
+                        //如果比较结果完全相同，则说明图片找到，填充查找到的位置坐标数据到查找结果数组。
+                        if (isFinded) {
+                            result.add(new Point(x, y));
+                            if (isFindOne) {
+                                oneResult = new Point(x, y);
+                                return;
+                            }
+                            continue out;
+                        }
+                    }
+
                 }
             }
         }
@@ -168,11 +237,41 @@ public class FindPicUtil {
     }
 
 
+    public boolean isMatchAll1(int y, int x) {
+        int biggerY = 0;
+        int biggerX = 0;
+        int xor = 0;
+        int count = 0;
+        int total = 0;
+        wxx:
+        for (int smallerY = 0; smallerY < keyImgHeight; smallerY++) {
+            biggerY = y + smallerY;
+            for (int smallerX = 0; smallerX < keyImgWidth; smallerX++) {
+                total++;
+                biggerX = x + smallerX;
+                if (biggerY >= scrShotImgHeight || biggerX >= scrShotImgWidth) {
+                    continue wxx;
+                }
+                xor = keyImageRgbData[smallerY][smallerX] ^ screenShotImageRgbData[biggerY][biggerX];
+                if (xor != 0) {
+                    continue wxx;
+                }
+            }
+            biggerX = x;
+            count++;
+        }
+        if (count / total > 0.8) {
+            return true;
+        }
+        return false;
+    }
+
 
     public static void main(String[] args) {
 //        String keyImagePath = "inviteBtn.png";
         String keyImagePath = "invite2.bmp";
-        FindPicUtil demo = new FindPicUtil("D:\\IdeaProjects\\Robot\\currentClient.png", Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\play按钮.bmp"));
+        FindPicUtil demo = new FindPicUtil("D:\\IdeaProjects\\Robot\\error\\判断蓝红方1606922595090.png", Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\游戏中\\蓝色方对面中高地塔1.bmp")
+                , 1);
         System.out.println(demo.result);
     }
 

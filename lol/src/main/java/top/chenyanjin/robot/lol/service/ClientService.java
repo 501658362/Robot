@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Slf4j
 public class ClientService extends Thread {
+
     /**
      * Allocates a new {@code Thread} object. This constructor has the same
      * effect as
@@ -28,51 +29,56 @@ public class ClientService extends Thread {
 
     @Override
     public void run() {
-        while (!this.isInterrupted() && GlobalData.mode.get() == 2) {
-            if (Main.selectHeroGame.isAlive()) {
-                log.info("选英雄线程正在运行中");
+        while (true) {
+            while (!this.isInterrupted() && GlobalData.mode.get() == 2){
+//                if (Main.selectHeroGame.isAlive()) {
+//                    log.info("选英雄线程正在运行中");
+//                    DelayUtil.delay(5000L);
+//                    return;
+//                }
+                int currentPage = getCurrentPage();
+
+                // 首页
+                if (currentPage == 1) {
+                    enterRoom();
+                }
+                // 房间页
+                if (currentPage == 2) {
+                    log("在房间中");
+                    //TODO 检测是否需要选位置
+                    if (isOwner()) {
+                        // 检测是否需要邀请
+                        inviteTeamMate();
+                        clickFindGame();
+                        matchingGame();
+                    } else {
+                        // 等待游戏开始
+                        matchingGame();
+                    }
+                }
+                // 匹配游戏中
+                if (currentPage == 3) {
+                    log("匹配游戏中");
+                    //TODO 等待接受游戏
+                    matchingGame();
+                }
+                // 匹配游戏中
+                if (currentPage == 4) {
+                    log("选择英雄中");
+                }
+                // 秒退惩罚中
+                if (currentPage == 5) {
+                    log("秒退惩罚中");
+                }
+
+                // 接受对局
+                if (currentPage == 6) {
+                    log("接受对局");
+                }
+
                 DelayUtil.delay(5000L);
-                return;
             }
-            int currentPage = getCurrentPage();
-
-            // 首页
-            if (currentPage == 1) {
-                enterRoom();
-            }
-            // 房间页
-            if (currentPage == 2) {
-                log("在房间中");
-                //TODO 检测是否需要选位置
-                if (isOwner()) {
-                    // 检测是否需要邀请
-                    inviteTeamMate();
-                    clickFindGame();
-                    matchingGame();
-                } else {
-                    // 等待游戏开始
-                    matchingGame();
-                }
-            }
-            // 匹配游戏中
-            if (currentPage == 3) {
-                log("匹配游戏中");
-                //TODO 等待接受游戏
-                matchingGame();
-            }
-            // 匹配游戏中
-            if (currentPage == 4) {
-                log("选择英雄中");
-                if (!Main.selectHeroGame.isAlive()) {
-                    Main.selectHeroGame.start();
-                }
-            }
-            // 秒退惩罚中
-            if (currentPage == 5) {
-                log("秒退惩罚中");
-            }
-
-            DelayUtil.delay(5000L);
+            DelayUtil.delay(1000L);
         }
 
     }
@@ -288,6 +294,16 @@ public class ClientService extends Thread {
 
     private int getCurrentPage() {
         int page = 1;
+        boolean b = ClickByImgUtil.clickOne(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\接受对局.bmp",
+                "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\接受1.bmp"
+        ));
+        if(b){
+            log.info("找到对局");
+
+            page = 6;
+            GlobalData.clientCurrentPage.set(page);
+            return page;
+        }
         // 选英雄中
         if (ImageUtil.find(Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\编辑符文.bmp",
                 "C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\闪现.bmp",
