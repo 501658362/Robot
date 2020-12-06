@@ -39,3 +39,6 @@ bootstrap-dev.yml
 rebel.xml
 .DS_Store
 
+dependency-reduced-pom.xml
+currentClient.png
+error/
