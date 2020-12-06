@@ -12,6 +12,8 @@ public enum ClientModeEnum {
 
     TEAM_OWNER("房主", 101),
     TEAM_MEMBER("队友", 102),
+
+    UNKNOWN("未知", 102),
     ;
 
 

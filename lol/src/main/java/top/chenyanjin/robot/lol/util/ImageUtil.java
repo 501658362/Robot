@@ -77,6 +77,10 @@ public class ImageUtil {
         WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
         Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
         WinUtil.active(GlobalData.hwnd);
+        if(rectangle.height <= 0){
+            rectangle.height = 1080;
+            rectangle.width = 1920;
+        }
         BufferedImage screenCapture = RobotUtil.createScreenCapture(rectangle);
         //        try {
         //            ImageIO.write(screenCapture, "png", new File(fileName));

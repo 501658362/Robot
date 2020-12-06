@@ -45,6 +45,7 @@ public class ClickByImgUtil {
     public static boolean findOneAndClickOne(String path, String error) {
         return findOneAndClickOne(Lists.newArrayList(path));
     }
+
     public static boolean findOneAndClickOne(List<String> pathList) {
         Point onePointAndReturn = ImageUtil.findOnePointAndReturn(pathList);
         if (onePointAndReturn != null) {
@@ -56,6 +57,7 @@ public class ClickByImgUtil {
             return false;
         }
     }
+
     public static boolean findOneAndClickOne(List<String> pathList, String error) {
         boolean b = findOneAndClickOne(pathList);
         if (!b) {

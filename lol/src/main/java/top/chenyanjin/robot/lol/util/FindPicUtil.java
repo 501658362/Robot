@@ -270,7 +270,7 @@ public class FindPicUtil {
     public static void main(String[] args) {
 //        String keyImagePath = "inviteBtn.png";
         String keyImagePath = "invite2.bmp";
-        FindPicUtil demo = new FindPicUtil("D:\\IdeaProjects\\Robot\\error\\判断蓝红方1606922595090.png", Lists.newArrayList("C:\\Users\\CHEN\\Desktop\\AutoHotKey\\dm\\lol\\游戏中\\蓝色方对面中高地塔1.bmp")
+        FindPicUtil demo = new FindPicUtil("error\\判断蓝红方1606922595090.png", Lists.newArrayList("游戏中\\蓝色方对面中高地塔1.bmp")
                 , 1);
         System.out.println(demo.result);
     }

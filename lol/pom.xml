@@ -95,6 +95,25 @@
             <scope>test</scope>
         </dependency>
 
-    </dependencies>
+        <!-- https://mvnrepository.com/artifact/net.sourceforge.tess4j/tess4j -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>4.5.4</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.cjoop</groupId>
+            <artifactId>cjoop-dm</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.hynnet/jacob -->
+
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>cjoop-repo</id>
+            <url>https://raw.githubusercontent.com/cjjava/cjoop-repo/master</url>
+        </repository>
+    </repositories>
 </project>

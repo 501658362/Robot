@@ -1,9 +1,11 @@
 package top.chenyanjin.robot.lol.thread;
 
+import com.google.common.collect.Lists;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.Data;
 import top.chenyanjin.robot.lol.enums.ClientModeEnum;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -28,11 +30,16 @@ public class GlobalData {
     /**
      * 房主还是队友
      */
-    public static volatile ClientModeEnum clientRuleMode = ClientModeEnum.TEAM_OWNER;
+    public static volatile ClientModeEnum clientRuleMode = ClientModeEnum.UNKNOWN;
     /**
      * 客户端当前页面
      */
     public static volatile AtomicInteger clientCurrentPage = new AtomicInteger();
+
+    public static volatile AtomicInteger matchingDelay = new AtomicInteger(1000);
+
+    public static List<String> heroNameList = Lists.newArrayList();
+    public static List<String> teamMateList = Lists.newArrayList();
 
 
 }

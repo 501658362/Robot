@@ -44,6 +44,7 @@ public class WindowDetection extends Thread {
                     GlobalData.mode.set(value.getMode());
                     GlobalData.hwnd = game;
                     flag = true;
+                    WinUtil.active(GlobalData.hwnd);
                     delay();
                     break;
                 }

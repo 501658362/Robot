@@ -34,20 +34,32 @@ public class RobotUtil {
     }
 
     public static void click(Point point) {
+        click(point, true);
+    }
+
+    public static void click(Point point, boolean reset) {
         // 这是相对位置
         WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
         Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
         WinUtil.active(GlobalData.hwnd);
-        x = point.x + rectangle.x;
-        y = point.y + rectangle.y;
+//        x = point.x + rectangle.x;
+//        y = point.y + rectangle.y;
+        x = point.x;
+        y = point.y;
         robot.mouseMove(x, y);
-        clickWithRandom();
+        clickWithRandom(reset);
     }
 
     public static void click(int x, int y) {
         // 正确位置 不需要加相对位置
         robot.mouseMove(x, y);
         clickWithRandom();
+    }
+
+    public static void click(int x, int y, boolean reset) {
+        // 正确位置 不需要加相对位置
+        robot.mouseMove(x, y);
+        clickWithRandom(false);
     }
 
     public static void sendTextToInput(String text) {
@@ -72,10 +84,35 @@ public class RobotUtil {
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
     }
 
-    private static void clickWithRandom() {
-        robot.mousePress(KeyEvent.BUTTON1_MASK);
-        robot.delay(random.nextInt(200) + 300);
-        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-        robot.mouseMove(0, 0);
+    public static void doubleClick(int x, int y) {
+        robot.mouseMove(x, y);
+        doubleClick();
     }
+
+
+    public static void mouseMove(int x, int y) {
+        robot.mouseMove(x, y);
+    }
+
+    public static void clickKey(int keyEvent) {
+        robot.keyPress(keyEvent);
+        delay(200);
+        robot.keyRelease(keyEvent);
+    }
+
+    private static void clickWithRandom() {
+        clickWithRandom(true);
+    }
+
+    private static void clickWithRandom(boolean reset) {
+        robot.mousePress(KeyEvent.BUTTON1_MASK);
+//        robot.delay(random.nextInt(100) + 50);
+        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+        if (reset) {
+            //robot.mouseMove(100 + random.nextInt(50), 100 + random.nextInt(50));
+        }
+
+    }
+
+
 }

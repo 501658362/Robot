@@ -43,7 +43,7 @@ public class LolTest {
             Rectangle loginB = new Rectangle(x, y, 100, 30);
             //            1097, 308
             // 	1197, 334
-            File path = new File("D:\\IdeaProjects\\Robot\\lol\\target");
+            File path = new File("lol\\target");
             File file = new File(path, 2 + "." + "png");
             //ImageIO.write(screenCapture, "png", file);
             ImageIO.write(robot.createScreenCapture(loginB), "png", new File("loginBtn3.png"));
