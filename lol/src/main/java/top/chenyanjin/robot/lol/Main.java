@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.chenyanjin.robot.lol.enums.ClientModeEnum;
 import top.chenyanjin.robot.lol.thread.ClientService;
 import top.chenyanjin.robot.lol.thread.*;
+import top.chenyanjin.robot.lol.util.ErrorUtil;
 
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
@@ -28,6 +29,7 @@ public class Main implements HotkeyListener {
     public static void main(String[] args) throws IOException {
         JIntellitype.getInstance().addHotKeyListener(new Main());
         JIntellitype.getInstance().registerHotKey(1, 0, KeyEvent.VK_F8);
+        JIntellitype.getInstance().registerHotKey(2, 0, KeyEvent.VK_F9);
 
 
         log.info("开始执行");
@@ -72,7 +74,13 @@ public class Main implements HotkeyListener {
      */
     @Override
     public void onHotKey(int identifier) {
-        System.exit(1);
+        if(identifier == 1){
+            System.exit(1);
+        }else{
+            ErrorUtil.error("F9截图");
+            System.exit(1);
+        }
+
     }
 
     private static void setSetting() throws IOException {

@@ -25,19 +25,19 @@ public class RobotUtil {
         }
     }
 
-    public static BufferedImage createScreenCapture(Rectangle rectangle) {
+    public static synchronized BufferedImage createScreenCapture(Rectangle rectangle) {
         return robot.createScreenCapture(rectangle);
     }
 
-    public static void delay(int ms) {
+    public static synchronized void delay(int ms) {
         robot.delay(ms + random.nextInt(100) + 100);
     }
 
-    public static void click(Point point) {
+    public static synchronized void click(Point point) {
         click(point, true);
     }
 
-    public static void click(Point point, boolean reset) {
+    public static synchronized void click(Point point, boolean reset) {
         // 这是相对位置
         WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
         Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
@@ -50,25 +50,30 @@ public class RobotUtil {
         clickWithRandom(reset);
     }
 
-    public static void click(int x, int y) {
+    public static synchronized void click(int x, int y) {
         // 正确位置 不需要加相对位置
         robot.mouseMove(x, y);
         clickWithRandom();
     }
 
-    public static void click(int x, int y, boolean reset) {
+    public static synchronized void click(int x, int y, boolean reset) {
         // 正确位置 不需要加相对位置
         robot.mouseMove(x, y);
         clickWithRandom(false);
     }
 
-    public static void clickRelative(int x, int y) {
+    public static synchronized void clickRelative(int x, int y) {
         WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
         Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
         robot.mouseMove(x + rectangle.x + random.nextInt(5), y + rectangle.y + random.nextInt(5));
-        robot.mousePress(KeyEvent.BUTTON1_MASK);
-        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+        clickWithRandom();
 
+    }
+
+    public static synchronized void doubleClickRelative(int x, int y) {
+        WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
+        Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
+        doubleClick(x + rectangle.x + random.nextInt(5), y + rectangle.y + random.nextInt(5));
     }
 
     public static void sendTextToInput(String text) {
@@ -84,7 +89,7 @@ public class RobotUtil {
         robot.delay(300 + random.nextInt(100) + 5);
     }
 
-    public static void doubleClick() {
+    public static synchronized void doubleClick() {
         robot.mousePress(KeyEvent.BUTTON1_MASK);
         robot.delay(random.nextInt(50) + 50);
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
@@ -93,7 +98,7 @@ public class RobotUtil {
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
     }
 
-    public static void threeClick() {
+    public static synchronized void threeClick() {
         robot.mousePress(KeyEvent.BUTTON1_MASK);
         robot.delay(random.nextInt(50) + 10);
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
@@ -105,29 +110,47 @@ public class RobotUtil {
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
     }
 
-    public static void doubleClick(int x, int y) {
+    public static synchronized void doubleClick(int x, int y) {
         robot.mouseMove(x, y);
         doubleClick();
     }
 
 
-    public static void mouseMove(int x, int y) {
+    public static synchronized void mouseMove(int x, int y) {
         robot.mouseMove(x, y);
     }
 
-    public static void clickKey(int keyEvent) {
+    public static synchronized void mouseMoveR(int x, int y) {
+        WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
+        Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
+        robot.mouseMove(x + rectangle.x + random.nextInt(5), y + rectangle.y + random.nextInt(5));
+    }
+
+    public static synchronized void clickKey(int keyEvent) {
         robot.keyPress(keyEvent);
         delay(200);
         robot.keyRelease(keyEvent);
+    }
+
+    public static synchronized void clickRightR(int x, int y) {
+        mouseMoveR(x, y);
+        delay(200);
+        robot.mousePress(KeyEvent.BUTTON3_MASK);
+        robot.delay(random.nextInt(10) + 10);
+        robot.mouseRelease(KeyEvent.BUTTON3_MASK);
     }
 
     private static void clickWithRandom() {
         clickWithRandom(true);
     }
 
-    private static void clickWithRandom(boolean reset) {
+    private static synchronized void clickWithRandom(boolean reset) {
+
         robot.mousePress(KeyEvent.BUTTON1_MASK);
 //        robot.delay(random.nextInt(100) + 50);
+        robot.delay(random.nextInt(10) + 10);
+        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+        robot.delay(random.nextInt(10) + 10);
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
         if (reset) {
             //robot.mouseMove(100 + random.nextInt(50), 100 + random.nextInt(50));

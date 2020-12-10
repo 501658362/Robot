@@ -46,17 +46,20 @@ public class MatchingGame extends Thread {
         super.run();
 
         while (true) {
-            log.info("寻找对战");
-            boolean b = DmPicUtil.check("对局已找到.bmp", "接受1.bmp");
-            if (b) {
-                if ("1280".equals(GlobalData.resolution)) {
-                    RobotUtil.clickRelative(650, 560);
-                } else {
-                    RobotUtil.clickRelative(819, 699);
+            while (GlobalData.mode.get() == 2) {
+                log.info("寻找对战");
+                boolean b = DmPicUtil.check("对局已找到.bmp", "接受1.bmp");
+                if (b) {
+                    if ("1280".equals(GlobalData.resolution)) {
+                        RobotUtil.clickRelative(650, 560);
+                    } else {
+                        RobotUtil.clickRelative(819, 699);
+                    }
+                    // 819 699
+                    log.info("找到对局");
+                    DelayUtil.delay(10000L);
                 }
-                // 819 699
-                log.info("找到对局");
-                DelayUtil.delay(10000L);
+                DelayUtil.delay(GlobalData.matchingDelay.get());
             }
             DelayUtil.delay(GlobalData.matchingDelay.get());
         }

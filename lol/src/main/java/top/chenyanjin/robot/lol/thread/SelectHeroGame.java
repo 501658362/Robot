@@ -8,12 +8,13 @@ import top.chenyanjin.robot.lol.util.DmPicUtil;
 import top.chenyanjin.robot.lol.util.RobotUtil;
 
 import java.awt.event.KeyEvent;
-import java.text.MessageFormat;
 import java.util.List;
 
 @Slf4j
 public class SelectHeroGame extends Thread {
 
+
+    public static long delay = 5000;
 
     /**
      * Allocates a new {@code Thread} object. This constructor has the same
@@ -43,12 +44,14 @@ public class SelectHeroGame extends Thread {
             while (GlobalData.mode.get() == 2) {
 
                 // 选英雄中
-                if (DmPicUtil.check(
+                if (DmPicUtil.check("编辑符文.bmp",
                         "闪现.bmp"
-                )) {
+                ) || ClientService.currentPage == 4) {
                     log.info("开始选英雄");
-                    GlobalData.matchingDelay.set(5000);
+                    GlobalData.matchingDelay.set(10000);
+                    delay = 1000;
                 } else {
+                    delay = 5000;
                     DelayUtil.delay(3000L);
                 }
 
@@ -72,16 +75,18 @@ public class SelectHeroGame extends Thread {
                     log.info("该选英雄了");
                     // 寒冰射手、风暴之怒、时光守护者、麦林炮手、赏金猎人、符文法师、暗黑子女
                     // 选用英雄
-                    // 输入搜索名称 然后搜索英雄名称 看是否可以找到，如果找不到 则用下一个英雄    如果3次都不用 随机选择
-                    boolean search = DmPicUtil.click(true, "搜索英雄1.bmp", "搜索英雄.bmp");
-                    if (!search) {
-                        return;
-                    }
+//                    // 输入搜索名称 然后搜索英雄名称 看是否可以找到，如果找不到 则用下一个英雄    如果3次都不用 随机选择
+//                    boolean search = DmPicUtil.click(true, "搜索英雄1.bmp", "搜索英雄.bmp");
+//                    if (!search) {
+//                        return;
+//                    }
+
                     List<String> defaultList = Lists.newArrayList("众星之子", "战争女神",
                             "寒冰射手", "风暴之怒", "时光守护者", "雪原双子", "麦林炮手", "赏金猎人", "符文法师", "天启者", "黑暗之女", "无极剑圣");
                     GlobalData.heroNameList.addAll(defaultList);
                     boolean find = false;
                     for (String heroName : GlobalData.heroNameList) {
+                        RobotUtil.clickRelative(887, 108);
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
@@ -89,10 +94,14 @@ public class SelectHeroGame extends Thread {
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
                         RobotUtil.sendTextToInput(heroName);
-                        find = DmPicUtil.click(true, MessageFormat.format("{0}.bmp", heroName));
+                        //find = DmPicUtil.click(true, MessageFormat.format("{0}.bmp", heroName));
+                        // 选择英雄
+                        RobotUtil.clickRelative(388, 160);
+                        find = DmPicUtil.click(true, "锁定英雄2.bmp", "锁定英雄1.bmp");
                         if (find) {
                             break;
                         }
+                        DelayUtil.delay(500);
                     }
                     if (!find) {
                         log.error("选不到英雄");
@@ -100,11 +109,10 @@ public class SelectHeroGame extends Thread {
                     }
 
                     // 确认选用
-                    DmPicUtil.click(true, "锁定英雄2.bmp","锁定英雄1.bmp");
 
 
                 }
-                DelayUtil.delay(5000L);
+                DelayUtil.delay(delay);
             }
             DelayUtil.delay(3000L);
         }

@@ -3,7 +3,6 @@ package top.chenyanjin.robot.lol.thread;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import top.chenyanjin.robot.lol.enums.ClientModeEnum;
-import top.chenyanjin.robot.lol.thread.GlobalData;
 import top.chenyanjin.robot.lol.util.DelayUtil;
 import top.chenyanjin.robot.lol.util.DmPicUtil;
 import top.chenyanjin.robot.lol.util.ErrorUtil;
@@ -29,6 +28,8 @@ public class ClientService extends Thread {
         super(name);
     }
 
+    public static volatile int currentPage = 1;
+
     @Override
     public void run() {
         while (true) {
@@ -38,7 +39,7 @@ public class ClientService extends Thread {
 //                    DelayUtil.delay(5000L);
 //                    return;
 //                }
-                int currentPage = getCurrentPage();
+                currentPage = getCurrentPage();
 
                 // 首页
                 if (currentPage == 1) {
@@ -73,6 +74,7 @@ public class ClientService extends Thread {
                     } else {
                         // 等待游戏开始
                         log("等待游戏开始匹配");
+                        waitingForInvite();
                         matchingGame();
 
                         RobotUtil.delay(5000);
@@ -252,6 +254,10 @@ public class ClientService extends Thread {
         DelayUtil.delay(1000);
         RobotUtil.clickRelative(483, 580);
         DelayUtil.delay(1000);
+        RobotUtil.clickRelative(530, 484);
+        DelayUtil.delay(1000);
+        RobotUtil.clickRelative(528, 580);
+        DelayUtil.delay(1000);
 //        boolean click = DmPicUtil.click(true, "选位置按钮.bmp", "选位置按钮1.bmp");
 //        if (!click) {
 //            return false;
@@ -310,7 +316,7 @@ public class ClientService extends Thread {
     private void waitingForInvite() {
         //TODO 等待邀请
         log("等待邀请ing");
-        DmPicUtil.click("被队友邀请按钮.bmp");
+        DmPicUtil.click("被邀请.bmp","被队友邀请按钮.bmp");
     }
 
     private boolean isTeamMode() {
@@ -339,6 +345,12 @@ public class ClientService extends Thread {
             GlobalData.clientCurrentPage.set(page);
             return page;
         }
+
+        // 赞队友
+        // 643 649 跳过赞队友
+        // 结算页面
+        // 547,690 点再来一局
+
         // 选英雄中
         List<Point> positions = DmPicUtil.findPositions("编辑符文.bmp",
                 "闪现.bmp"
@@ -348,6 +360,22 @@ public class ClientService extends Thread {
             page = 4;
             GlobalData.clientCurrentPage.set(page);
             return page;
+        }
+
+
+        boolean check = DmPicUtil.check("赞队友.bmp");
+        if (check) {
+            log("赞队友");
+            RobotUtil.clickRelative(643, 649);
+        }
+
+        boolean checkRe = DmPicUtil.check("结算页面.bmp");
+        if (checkRe) {
+            log("结算页面 找再来一局");
+            RobotUtil.clickRelative(547,690 );
+            RobotUtil.delay(500);
+            RobotUtil.doubleClickRelative(547,690 );
+            RobotUtil.delay(500);
         }
 
         // 在房间里

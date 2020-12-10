@@ -10,6 +10,8 @@ import top.chenyanjin.robot.lol.util.WinUtil;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -69,12 +71,12 @@ public class PlayGame extends Thread {
                 log.info(rectangle.toString());
                 long start = System.currentTimeMillis();
                 while (gameRule == 0) {
-                    if ((System.currentTimeMillis() - start) > 60 * 1000 * 3) {
+                    if ((System.currentTimeMillis() - start) > 60 * 1000 * 2) {
                         // 3分钟超时 设置为默认蓝色方
                         gameRule = 1;
                     }
-                    boolean checkBlue = DmPicUtil.check("红色水晶.bmp");
-                    boolean checkRed = DmPicUtil.check("蓝色方基地.bmp");
+                    boolean checkBlue = DmPicUtil.check(true, "红色水晶1.bmp", "红色水晶.bmp");
+                    boolean checkRed = DmPicUtil.check(true, "蓝色方基地.bmp");
 //                        Robot robot = new Robot();
 //                        //TODO 这里是写死的坐标  需要改
 //                        Color pixelColor = robot.getPixelColor(1900, 823);
@@ -90,7 +92,7 @@ public class PlayGame extends Thread {
                         gameRule = 1;
                         log.info("蓝色方");
                     }
-                    RobotUtil.delay(1000);
+                    RobotUtil.delay(3000);
                 }
                 // 两分钟内 在家里买东西
                 if (getMin() <= 2 && buyTimes == 0) {
@@ -105,13 +107,37 @@ public class PlayGame extends Thread {
                 // 跟随F2
                 RobotUtil.clickKey(KeyEvent.VK_F2);
                 // 蓝色方 961,771 922,771 888,771
-                // 蓝色方 1006,727 1003,682 1008,654
+                // 红色方 1006,727 1003,682 1008,654
                 // A攻击
                 attack();
                 RobotUtil.clickKey(KeyEvent.VK_D);
                 RobotUtil.clickKey(KeyEvent.VK_F);
-                RobotUtil.delay(3000);
+
+                RobotUtil.clickKey(KeyEvent.VK_A);
                 long time = getMin();
+                if (gameRule == 1) {
+                    // 蓝色方 961,771 922,771 888,771
+                    if (time <= 8) {
+                        RobotUtil.clickRelative(961, 740);
+                    } else if (time <= 10) {
+                        RobotUtil.clickRelative(922, 740);
+                    } else {
+                        RobotUtil.clickRelative(888, 740);
+                    }
+                } else {
+                    // 红色方 1006,727 1003,682 1008,654
+                    if (time <= 8) {
+                        RobotUtil.clickRelative(999, 702);
+                    } else if (time <= 10) {
+                        RobotUtil.clickRelative(1002, 659);
+                    } else {
+                        RobotUtil.clickRelative(996, 629);
+                    }
+                }
+                RobotUtil.clickKey(KeyEvent.VK_SPACE);
+                RobotUtil.delay(500);
+                RobotUtil.mouseMoveR(516, 355);
+                RobotUtil.delay(3000);
                 if (time == 5) {
                     shop();
                 }
@@ -151,48 +177,76 @@ public class PlayGame extends Thread {
         RobotUtil.delay(10000);
         RobotUtil.clickKey(KeyEvent.VK_P);
         RobotUtil.delay(1000);
-        RobotUtil.clickRelative(375, 144);
-        RobotUtil.delay(1000);
-        RobotUtil.clickRelative(170, 215);
-        // untilFind("游戏内商品所有物品.bmp", "游戏内商品所有物品1.bmp", "商店all.bmp");
+        if (buyTimes == 0) {
+            // 点击 所有物品
+            RobotUtil.clickRelative(364, 115);
+            RobotUtil.delay(3000);
+            // 点击 所有物品图标
+            RobotUtil.clickRelative(170, 188);
+            RobotUtil.delay(1000);
+            RobotUtil.clickRelative(170, 188);
+            RobotUtil.delay(1000);
+            // untilFind("游戏内商品所有物品.bmp", "游戏内商品所有物品1.bmp", "商店all.bmp");
 
-        Point p = DmPicUtil.findPosition("图标3.bmp", "图标1.bmp");
-        if (p != null) {
-            RobotUtil.click(p.x, p.y);
+            Point p = DmPicUtil.findPosition("图标3.bmp", "图标1.bmp");
+            if (p != null) {
+                RobotUtil.click(p.x, p.y);
+            }
+            untilFind("商店生命值图标.bmp", "商店生命值图标1.bmp");
         }
 
-        untilFind("商店生命值图标.bmp", "商店生命值图标1.bmp");
 
         long time = getMin();
         log.info("当前时间：{}, buyTimes:{}", time, buyTimes);
-        if (time <= 5 && buyTimes == 0) {
-            Point position = DmPicUtil.findPosition("钢铁护肩.bmp", "窃法之刃.bmp", "幽魂镰刀.bmp", "杀人戒.bmp");
-            if (position != null) {
-                RobotUtil.doubleClick(position.x, position.y);
-                buyTimes++;
-            } else {
-
-            }
+        if (time <= 5 && buyTimes <= 1) {
+            log.info("买出门装");
+            Map<Integer, Integer> eq = new HashMap<>();
+            eq.put(1, 290);
+            eq.put(2, 334);
+            eq.put(3, 372);
+            eq.put(4, 410);
+            eq.put(5, 440);
+            eq.put(6, 450);
+            Random random = new Random();
+            RobotUtil.doubleClickRelative(eq.getOrDefault(random.nextInt(5) + 1, 290), 255);
+            buyTimes++;
+            // 270
+//            Point position = DmPicUtil.findPosition("钢铁护肩.bmp", "窃法之刃.bmp", "幽魂镰刀.bmp", "杀人戒.bmp");
+//            if (position != null) {
+//                RobotUtil.doubleClick(position.x, position.y);
+//                buyTimes++;
+//            } else {
+//
+//            }
         }
 
-        if (time <= 10 && buyTimes <= 2) {
-            Point position = DmPicUtil.findPosition("400生命值.bmp");
-            if (position != null) {
-                RobotUtil.doubleClick(position.x, position.y);
-                buyTimes++;
-            }
+        if (time <= 30 && buyTimes > 1 && buyTimes <= 6) {
+            Map<Integer, Integer> eq = new HashMap<>();
+            eq.put(1, 210);
+            eq.put(2, 250);
+            eq.put(3, 390);
+            eq.put(4, 430);
+            eq.put(5, 470);
+            eq.put(6, 510);
+            RobotUtil.doubleClickRelative(eq.getOrDefault(buyTimes, 210), 415);
+            buyTimes++;
+//            Point position = DmPicUtil.findPosition("400生命值.bmp");
+//            if (position != null) {
+//                RobotUtil.doubleClick(position.x, position.y);
+//                buyTimes++;
+//            }
 
         }
 
-        if (time <= 15 && buyTimes < 5) {
-            Point position = DmPicUtil.findPosition("900生命值.bmp");
-            if (position != null) {
-                RobotUtil.doubleClick(position.x, position.y);
-                RobotUtil.doubleClick(position.x, position.y);
-                buyTimes++;
-            }
-
-        }
+//        if (time <= 15 && buyTimes < 5) {
+//            Point position = DmPicUtil.findPosition("900生命值.bmp");
+//            if (position != null) {
+//                RobotUtil.doubleClick(position.x, position.y);
+//                RobotUtil.doubleClick(position.x, position.y);
+//                buyTimes++;
+//            }
+//
+//        }
         RobotUtil.delay(1000);
         RobotUtil.clickKey(KeyEvent.VK_P);
     }
@@ -234,6 +288,13 @@ public class PlayGame extends Thread {
     }
 
     private void skill() {
+        RobotUtil.clickKey(KeyEvent.VK_SPACE);
+        if (gameRule == 1) {
+            RobotUtil.mouseMoveR(611, 311);
+        } else {
+            RobotUtil.mouseMoveR(345, 547);
+        }
+
         Random random = new Random();
         int i = random.nextInt(4);
         switch (i) {
