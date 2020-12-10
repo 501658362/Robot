@@ -5,11 +5,14 @@ import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import lombok.extern.slf4j.Slf4j;
 import top.chenyanjin.robot.lol.enums.ClientModeEnum;
-import top.chenyanjin.robot.lol.service.ClientService;
+import top.chenyanjin.robot.lol.thread.ClientService;
 import top.chenyanjin.robot.lol.thread.*;
 
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
@@ -76,7 +79,7 @@ public class Main implements HotkeyListener {
 
         Properties properties = new Properties();
         // 使用InPutStream流读取properties文件
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("setting.properties"),"UTF-8"));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("setting.properties"), "UTF-8"));
 //        owner=true
 //        teammate=拿回忆下酒s,滚出我的心ea,假装狠辛福vd,暖暖的掌心mn
 //        hero=众星之子,战争女神
@@ -94,7 +97,7 @@ public class Main implements HotkeyListener {
         GlobalData.heroNameList = Lists.newArrayList(hero.split(","));
         String teammate = properties.getProperty("teammate");
         GlobalData.teamMateList = Lists.newArrayList(teammate.split(","));
-
+        GlobalData.resolution = properties.getProperty("resolution");
 
     }
 }

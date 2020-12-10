@@ -9,7 +9,28 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger:%-4.4line - %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="QUOTE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/log.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>log/log.%d{yyyy-MM-dd}.log</fileNamePattern>
 
+            <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+            <!--<maxFileSize>300MB</maxFileSize>-->
+            <maxHistory>60</maxHistory>
+            <!--<totalSizeCap>20GB</totalSizeCap>-->
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d %-5level %logger:%-4.4line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!--basic 模块的日志输出到指定文件-->
+    <logger name="top.chenyanjin.robot" level="${log.level}">
+        <appender-ref ref="QUOTE"/>
+    </logger>
     <root level="debug">
         <appender-ref ref="STDOUT"/>
     </root>

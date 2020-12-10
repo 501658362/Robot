@@ -56,6 +56,7 @@ public class PlayGame extends Thread {
         while (true) {
 
             while (GlobalData.mode.get() == 1) {
+                GlobalData.matchingDelay.set(30000);
                 if (gameStart == 0) {
                     gameStart = System.currentTimeMillis();
                 }
@@ -72,27 +73,27 @@ public class PlayGame extends Thread {
                         // 3分钟超时 设置为默认蓝色方
                         gameRule = 1;
                     }
-                    try {
-                        Robot robot = new Robot();
-                        //TODO 这里是写死的坐标  需要改
-                        Color pixelColor = robot.getPixelColor(1900, 823);
-                        Color hongse = robot.getPixelColor(1664, 1059);
-
-                        if (hongse.equals(new Color(23, 38, 52))) {
-                            gameRule = 2;
-                            log.info("红色方");
-                        }
-                        if (pixelColor.equals(new Color(45, 33, 38))) {
-                            gameRule = 1;
-                            log.info("蓝色方");
-                        }
-                    } catch (AWTException e) {
-                        e.printStackTrace();
+                    boolean checkBlue = DmPicUtil.check("红色水晶.bmp");
+                    boolean checkRed = DmPicUtil.check("蓝色方基地.bmp");
+//                        Robot robot = new Robot();
+//                        //TODO 这里是写死的坐标  需要改
+//                        Color pixelColor = robot.getPixelColor(1900, 823);
+//                        Color hongse = robot.getPixelColor(1664, 1059);
+//
+//                        if (hongse.equals(new Color(23, 38, 52))) {
+                    if (checkRed) {
+                        gameRule = 2;
+                        log.info("红色方");
+                    }
+//                        if (pixelColor.equals(new Color(45, 33, 38))) {
+                    if (checkBlue) {
+                        gameRule = 1;
+                        log.info("蓝色方");
                     }
                     RobotUtil.delay(1000);
                 }
                 // 两分钟内 在家里买东西
-                if (getMin() <= 2) {
+                if (getMin() <= 2 && buyTimes == 0) {
                     shop();
                 }
                 RobotUtil.delay(1000);
@@ -103,12 +104,26 @@ public class PlayGame extends Thread {
                 skill();
                 // 跟随F2
                 RobotUtil.clickKey(KeyEvent.VK_F2);
+                // 蓝色方 961,771 922,771 888,771
+                // 蓝色方 1006,727 1003,682 1008,654
                 // A攻击
                 attack();
                 RobotUtil.clickKey(KeyEvent.VK_D);
                 RobotUtil.clickKey(KeyEvent.VK_F);
                 RobotUtil.delay(3000);
                 long time = getMin();
+                if (time == 5) {
+                    shop();
+                }
+                if (time == 7) {
+                    shop();
+                }
+                if (time == 9) {
+                    shop();
+                }
+                if (time == 11) {
+                    shop();
+                }
                 if (time >= 15) {
                     // 发起投降
                     RobotUtil.clickKey(KeyEvent.VK_ENTER);
@@ -125,28 +140,33 @@ public class PlayGame extends Thread {
     }
 
     private long getMin() {
-        return (System.currentTimeMillis() - gameStart) / (1000 * 60);
+        long min = (System.currentTimeMillis() - gameStart) / (1000 * 60);
+        log.info("当前 {} 分钟", min);
+
+        return min;
     }
 
     private void shop() {
         RobotUtil.clickKey(KeyEvent.VK_B);
         RobotUtil.delay(10000);
         RobotUtil.clickKey(KeyEvent.VK_P);
-
-
+        RobotUtil.delay(1000);
+        RobotUtil.clickRelative(375, 144);
+        RobotUtil.delay(1000);
+        RobotUtil.clickRelative(170, 215);
         // untilFind("游戏内商品所有物品.bmp", "游戏内商品所有物品1.bmp", "商店all.bmp");
 
-        Point p = DmPicUtil.findPosition("图标3.bmp");
+        Point p = DmPicUtil.findPosition("图标3.bmp", "图标1.bmp");
         if (p != null) {
-            RobotUtil.doubleClick(p.x, p.y);
+            RobotUtil.click(p.x, p.y);
         }
 
-        untilFind("商店生命值图标.bmp");
+        untilFind("商店生命值图标.bmp", "商店生命值图标1.bmp");
 
         long time = getMin();
         log.info("当前时间：{}, buyTimes:{}", time, buyTimes);
         if (time <= 5 && buyTimes == 0) {
-            Point position = DmPicUtil.findPosition("400工资装.bmp", "窃法之刃.bmp", "幽魂镰刀.bmp", "杀人戒.bmp");
+            Point position = DmPicUtil.findPosition("钢铁护肩.bmp", "窃法之刃.bmp", "幽魂镰刀.bmp", "杀人戒.bmp");
             if (position != null) {
                 RobotUtil.doubleClick(position.x, position.y);
                 buyTimes++;
@@ -155,16 +175,23 @@ public class PlayGame extends Thread {
             }
         }
 
-        if (time <= 10 && buyTimes == 1) {
+        if (time <= 10 && buyTimes <= 2) {
             Point position = DmPicUtil.findPosition("400生命值.bmp");
-            RobotUtil.doubleClick(position.x, position.y);
-            buyTimes++;
+            if (position != null) {
+                RobotUtil.doubleClick(position.x, position.y);
+                buyTimes++;
+            }
+
         }
 
-        if (time <= 15 && buyTimes == 2) {
-            Point position = DmPicUtil.findPosition("400生命值.bmp");
-            RobotUtil.doubleClick(position.x, position.y);
-            buyTimes++;
+        if (time <= 15 && buyTimes < 5) {
+            Point position = DmPicUtil.findPosition("900生命值.bmp");
+            if (position != null) {
+                RobotUtil.doubleClick(position.x, position.y);
+                RobotUtil.doubleClick(position.x, position.y);
+                buyTimes++;
+            }
+
         }
         RobotUtil.delay(1000);
         RobotUtil.clickKey(KeyEvent.VK_P);
@@ -196,7 +223,7 @@ public class PlayGame extends Thread {
             rectangle.width = 1920;
         }
         RobotUtil.clickKey(KeyEvent.VK_A);
-        RobotUtil.click(rectangle.width / 2 - (gameRule == 1 ? -100 : 100), rectangle.height / 2 - 50, false);
+        RobotUtil.click((rectangle.width / 2 - (gameRule == 1 ? -100 : 100)) + rectangle.x, (rectangle.height / 2 - 80) + rectangle.y, false);
     }
 
     private void upgradeSkill() {

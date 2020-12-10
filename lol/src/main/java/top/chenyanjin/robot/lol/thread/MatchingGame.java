@@ -1,14 +1,12 @@
 package top.chenyanjin.robot.lol.thread;
 
 
-import com.sun.jna.platform.win32.WinUser;
 import lombok.extern.slf4j.Slf4j;
 import top.chenyanjin.robot.lol.util.DelayUtil;
 import top.chenyanjin.robot.lol.util.DmPicUtil;
-import top.chenyanjin.robot.lol.util.WinUtil;
+import top.chenyanjin.robot.lol.util.RobotUtil;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 @Slf4j
 public class MatchingGame extends Thread {
@@ -49,13 +47,13 @@ public class MatchingGame extends Thread {
 
         while (true) {
             log.info("寻找对战");
-            boolean b = DmPicUtil.check("对局已找到.bmp", "接受3.bmp");
+            boolean b = DmPicUtil.check("对局已找到.bmp", "接受1.bmp");
             if (b) {
-                WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
-                Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
-                robot.mouseMove(819 + rectangle.x, 699 + rectangle.y);
-                robot.mousePress(KeyEvent.BUTTON1_MASK);
-                robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+                if ("1280".equals(GlobalData.resolution)) {
+                    RobotUtil.clickRelative(650, 560);
+                } else {
+                    RobotUtil.clickRelative(819, 699);
+                }
                 // 819 699
                 log.info("找到对局");
                 DelayUtil.delay(10000L);

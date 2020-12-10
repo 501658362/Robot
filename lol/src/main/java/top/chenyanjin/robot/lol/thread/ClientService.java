@@ -1,8 +1,7 @@
-package top.chenyanjin.robot.lol.service;
+package top.chenyanjin.robot.lol.thread;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import top.chenyanjin.robot.lol.Main;
 import top.chenyanjin.robot.lol.enums.ClientModeEnum;
 import top.chenyanjin.robot.lol.thread.GlobalData;
 import top.chenyanjin.robot.lol.util.DelayUtil;
@@ -201,38 +200,47 @@ public class ClientService extends Thread {
             List<String> accountList = Lists.newArrayList("拿回忆下酒s", "滚出我的心ea", "假装狠辛福vd", "暖暖的掌心mn");
             int searchX = 0, searchY = 0, inputX = 0, inputY = 0;
             for (String account : accountList) {
-                if (inputX == 0) {
-                    boolean b = DmPicUtil.click("邀请队友输入框.bmp");
-                    inputX = RobotUtil.x;
-                    inputY = RobotUtil.y;
-                    RobotUtil.doubleClick();
-                    String x = "lolimg";
-                    if (!b) {
-                        error("邀请队友输入框");
-                    }
-                } else {
-                    RobotUtil.click(inputX, inputY);
-                }
+//                if (inputX == 0) {
+//
+//                    boolean b = DmPicUtil.click("邀请队友输入框1.bmp", "邀请队友输入框.bmp");
+//                    inputX = RobotUtil.x;
+//                    inputY = RobotUtil.y;
+//                    RobotUtil.threeClick();
+//                    String x = "lolimg";
+//                    if (!b) {
+//                        error("邀请队友输入框");
+//                    }
+//                } else {
+//                    RobotUtil.click(inputX, inputY);
+//                }
+//                RobotUtil.delay(1000);
+//                RobotUtil.mouseMove(inputX, inputY);
+//                RobotUtil.threeClick();
+//
+//                RobotUtil.sendTextToInput(account);
+//                RobotUtil.delay(1000);
+//                if (searchX == 0) {
+//                    boolean b = DmPicUtil.click("搜索队友按钮高亮.bmp");
+//                    searchX = RobotUtil.x;
+//                    searchY = RobotUtil.y;
+//                    if (!b) {
+//                        error("搜索队友按钮找不到");
+//                    }
+//                } else {
+//                    RobotUtil.click(searchX, searchY);
+//                }
+//                RobotUtil.delay(1000);
+                RobotUtil.clickRelative(698, 101);
                 RobotUtil.delay(1000);
-                RobotUtil.mouseMove(inputX, inputY);
-                RobotUtil.doubleClick();
-
+                RobotUtil.threeClick();
                 RobotUtil.sendTextToInput(account);
                 RobotUtil.delay(1000);
-                if (searchX == 0) {
-                    boolean b = DmPicUtil.click("搜索队友按钮高亮.bmp");
-                    searchX = RobotUtil.x;
-                    searchY = RobotUtil.y;
-                    if (!b) {
-                        error("搜索队友按钮找不到");
-                    }
-                } else {
-                    RobotUtil.click(searchX, searchY);
-                }
+                RobotUtil.clickRelative(786, 95);
                 RobotUtil.delay(1000);
-
             }
-            return DmPicUtil.click("发送邀请.bmp");
+            RobotUtil.clickRelative(644, 642);
+            return true;
+//            return DmPicUtil.click("发送邀请.bmp");
         }
         return false;
     }
@@ -240,14 +248,18 @@ public class ClientService extends Thread {
     private boolean selectPlayPosition() {
         //TODO 选择游戏位置
         log("选择游戏位置");
-        boolean click = DmPicUtil.click(true, "选位置按钮.bmp", "选位置按钮1.bmp");
-        if (!click) {
-            return false;
-        }
-
-        RobotUtil.delay(1000);
-        RobotUtil.click(RobotUtil.x + 10, RobotUtil.y + 100);
-        RobotUtil.delay(1000);
+        RobotUtil.clickRelative(487, 485);
+        DelayUtil.delay(1000);
+        RobotUtil.clickRelative(483, 580);
+        DelayUtil.delay(1000);
+//        boolean click = DmPicUtil.click(true, "选位置按钮.bmp", "选位置按钮1.bmp");
+//        if (!click) {
+//            return false;
+//        }
+//
+//        RobotUtil.delay(1000);
+//        RobotUtil.click(RobotUtil.x + 10, RobotUtil.y + 100);
+//        RobotUtil.delay(1000);
 
         return true;
 
@@ -256,30 +268,41 @@ public class ClientService extends Thread {
     private boolean clickPlayToRoomBtn() {
         //TODO 点击 play 按钮
         log("点击 play 按钮");
-        return DmPicUtil.click("play按钮.bmp",
+        return DmPicUtil.click("play按钮.bmp", "play按钮1.bmp",
                 "play按钮不可用.bmp");
     }
 
     private boolean selectGameMode() {
         //TODO 选择游戏模式
         log("选择游戏模式");
+        RobotUtil.clickRelative(63, 98);
+        DelayUtil.delay(1000);
+        RobotUtil.clickRelative(125, 234);
+        DelayUtil.delay(1000);
+        RobotUtil.clickRelative(143, 543);
+        DelayUtil.delay(1000);
+        RobotUtil.clickRelative(546, 689);
+        DelayUtil.delay(1000);
 
-        boolean click = DmPicUtil.click("灵活组排.bmp", "灵活组排1.bmp");
-        if (!click) {
-            boolean click1 = DmPicUtil.click("玩家对战.bmp");
-
-            boolean click2 = DmPicUtil.click("灵活组排.bmp", "灵活组排1.bmp");
-            if (click2) {
-                return DmPicUtil.click("确认开房间.bmp");
-            }
-            boolean click4 = DmPicUtil.click("召唤师峡谷.bmp");
-            boolean click5 = DmPicUtil.click("灵活组排.bmp", "灵活组排1.bmp");
-            if (click5) {
-                return DmPicUtil.click("确认开房间.bmp");
-            }
-        } else {
-            return DmPicUtil.click("确认开房间.bmp");
-        }
+//        boolean click = DmPicUtil.click("灵活组排.bmp", "灵活组排1.bmp");
+//        if (!click) {
+//            log("找不到游戏模式");
+//            boolean click1 = DmPicUtil.click("玩家对战.bmp");
+//
+//            boolean click2 = DmPicUtil.click("灵活组排.bmp", "灵活组排1.bmp");
+//            if (click2) {
+//                log("先点玩家对战 还是 找不到游戏模式");
+//                return DmPicUtil.click("确认开房间.bmp");
+//            }
+//            boolean click4 = DmPicUtil.click("召唤师峡谷.bmp", "召唤师峡谷1.bmp");
+//            boolean click5 = DmPicUtil.click("灵活组排.bmp", "灵活组排1.bmp");
+//            if (click5) {
+//                log("先点召唤师峡谷 还是 找不到游戏模式");
+//                return DmPicUtil.click("确认开房间.bmp");
+//            }
+//        } else {
+//            return DmPicUtil.click("确认开房间.bmp");
+//        }
         return false;
     }
 
@@ -307,6 +330,7 @@ public class ClientService extends Thread {
     private int getCurrentPage() {
         // 首页
         int page = 1;
+        // 650 560
         boolean b = DmPicUtil.click("接受对局.bmp", "接受1.bmp");
         if (b) {
             log.info("找到对局");
@@ -317,10 +341,7 @@ public class ClientService extends Thread {
         }
         // 选英雄中
         List<Point> positions = DmPicUtil.findPositions("编辑符文.bmp",
-                "闪现.bmp",
-                "选择你的英雄1.bmp",
-                "禁用不可用.bmp",
-                "首选.bmp"
+                "闪现.bmp"
         );
         if (positions != null && positions.size() > 0) {
             // 选择英雄中
@@ -338,7 +359,7 @@ public class ClientService extends Thread {
 
             // 在房间里 排队中
             if (DmPicUtil.check(
-                    "秒退屏蔽按钮.bmp"
+                    "秒退屏蔽按钮1.bmp", "秒退屏蔽按钮.bmp"
             )) {
                 page = 5;
                 GlobalData.clientCurrentPage.set(page);

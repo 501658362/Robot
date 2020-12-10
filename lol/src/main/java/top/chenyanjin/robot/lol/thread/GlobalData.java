@@ -36,10 +36,11 @@ public class GlobalData {
      */
     public static volatile AtomicInteger clientCurrentPage = new AtomicInteger();
 
-    public static volatile AtomicInteger matchingDelay = new AtomicInteger(1000);
+    public static volatile AtomicInteger matchingDelay = new AtomicInteger(5000);
 
     public static List<String> heroNameList = Lists.newArrayList();
     public static List<String> teamMateList = Lists.newArrayList();
+    public static String resolution = "1920";
 
 
 }

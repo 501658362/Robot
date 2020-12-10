@@ -62,6 +62,15 @@ public class RobotUtil {
         clickWithRandom(false);
     }
 
+    public static void clickRelative(int x, int y) {
+        WinUser.WINDOWPLACEMENT windowplacement = WinUtil.getWindowPlacement(GlobalData.hwnd);
+        Rectangle rectangle = windowplacement.rcNormalPosition.toRectangle();
+        robot.mouseMove(x + rectangle.x + random.nextInt(5), y + rectangle.y + random.nextInt(5));
+        robot.mousePress(KeyEvent.BUTTON1_MASK);
+        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+
+    }
+
     public static void sendTextToInput(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new StringSelection(text), null);
@@ -81,6 +90,18 @@ public class RobotUtil {
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
         robot.mousePress(KeyEvent.BUTTON1_MASK);
         robot.delay(random.nextInt(50) + 50);
+        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+    }
+
+    public static void threeClick() {
+        robot.mousePress(KeyEvent.BUTTON1_MASK);
+        robot.delay(random.nextInt(50) + 10);
+        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+        robot.mousePress(KeyEvent.BUTTON1_MASK);
+        robot.delay(random.nextInt(50) + 10);
+        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+        robot.mousePress(KeyEvent.BUTTON1_MASK);
+        robot.delay(random.nextInt(50) + 10);
         robot.mouseRelease(KeyEvent.BUTTON1_MASK);
     }
 

@@ -66,9 +66,7 @@ public class SelectHeroGame extends Thread {
 
 
                 boolean hero = DmPicUtil.check(
-                        "选择你的英雄.bmp",
-                        "锁定英雄.bmp"
-
+                        "选择你的英雄1.bmp", "选择你的英雄.bmp"
                 );
                 if (hero) {
                     log.info("该选英雄了");
@@ -79,10 +77,13 @@ public class SelectHeroGame extends Thread {
                     if (!search) {
                         return;
                     }
-                    List<String> defaultList = Lists.newArrayList("众星之子", "战争女神", "寒冰射手", "风暴之怒", "时光守护者", "雪原双子", "麦林炮手", "赏金猎人", "符文法师", "天启者", "黑暗之女", "无极剑圣");
+                    List<String> defaultList = Lists.newArrayList("众星之子", "战争女神",
+                            "寒冰射手", "风暴之怒", "时光守护者", "雪原双子", "麦林炮手", "赏金猎人", "符文法师", "天启者", "黑暗之女", "无极剑圣");
                     GlobalData.heroNameList.addAll(defaultList);
                     boolean find = false;
                     for (String heroName : GlobalData.heroNameList) {
+                        RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
+                        RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
                         RobotUtil.clickKey(KeyEvent.VK_BACK_SPACE);
